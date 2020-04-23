@@ -5,39 +5,42 @@ import 'package:flutter/material.dart';
 import 'color_generator.dart';
 
 class TextDrawableWidget extends StatefulWidget {
-  String text;
+  final String text;
   final double width;
   final double height;
   final BoxShape shape;
-  BorderRadiusGeometry borderRadius;
+  final BorderRadiusGeometry borderRadius;
   final TextStyle textStyle;
-  ColorGenerator colorGenerator;
+  final ColorGenerator colorGenerator;
   final Function onTap;
-  final bool isTapable;
+  final Color color;
 
-  TextDrawableWidget(this.text, this.colorGenerator, this.onTap,
-      [this.isTapable = true,
-      this.width = 60.0,
-      this.height = 60.0,
-      this.shape = BoxShape.circle,
-      this.textStyle = const TextStyle(color: Colors.white, fontSize: 28.0)]) {
-    if (text.length > 1) {
-      text = text.substring(0, 1);
-    }
-
-    if (shape == BoxShape.rectangle) {
-      borderRadius = BorderRadius.all(Radius.circular(5.0));
-    }
-  }
+  TextDrawableWidget({
+    Key key,
+    @required String text,
+    this.width = 60,
+    this.height = 60,
+    this.shape = BoxShape.circle,
+    BorderRadius borderRadius,
+    this.textStyle = const TextStyle(color: Colors.white, fontSize: 28.0),
+    ColorGenerator colorGenerator,
+    this.color,
+    this.onTap,
+  }): 
+    assert(text != null && text.isNotEmpty),
+    this.text = text[0],
+    this.colorGenerator = colorGenerator ?? ColorGenerator.defaultColors,
+    this.borderRadius = borderRadius ?? shape == BoxShape.rectangle ? const BorderRadius.all(Radius.circular(5.0)) : null,
+    super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _TextDrawableWidgetState(colorGenerator.getRandomColor());
+    return _TextDrawableWidgetState(color ?? colorGenerator.getRandomColor());
   }
 }
 
 class _TextDrawableWidgetState extends State<TextDrawableWidget> {
-  int rotationStatus = 0; // 0 means no rotation, 1 gets selected
+  var selected = false;
   final Color backgroundColor;
 
   _TextDrawableWidgetState(this.backgroundColor);
@@ -45,31 +48,24 @@ class _TextDrawableWidgetState extends State<TextDrawableWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (widget.isTapable) {
-          rotationStatus == 0 ? widget.onTap(true) : widget.onTap(false);
+      onTap: widget.onTap == null ? null : () {
+          widget.onTap(!selected);
 
           setState(() {
-            // change the ui
-            if (rotationStatus == 0) {
-              rotationStatus = 1;
-            } else {
-              rotationStatus = 0;
-            }
+            selected = !selected;
           });
-        }
       },
-      child: rotationStatus == 0 ? _getUnSelected() : _getSelected(),
+      child: selected ? _getSelected() : _getUnSelected(),
     );
   }
 
   Widget _getUnSelected() {
-    return new Stack(
+    return Stack(
       children: <Widget>[
         Container(
           width: widget.width,
           height: widget.height,
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: widget.borderRadius,
             color: backgroundColor,
             shape: widget.shape,
@@ -89,12 +85,12 @@ class _TextDrawableWidgetState extends State<TextDrawableWidget> {
   }
 
   Widget _getSelected() {
-    return new Stack(
+    return Stack(
       children: <Widget>[
         Container(
           width: widget.width,
           height: widget.height,
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: widget.borderRadius,
             color: Colors.grey.shade600,
             shape: widget.shape,

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class ColorGenerator {
-  static ColorGenerator defaultColors = create([
+  static final defaultColors = ColorGenerator([
     Color(0xfff16364),
     Color(0xfff58559),
     Color(0xfff9a43e),
@@ -15,7 +15,7 @@ class ColorGenerator {
     Color(0xff805781)
   ]);
 
-  static ColorGenerator materialColors = create([
+  static final materialColors = ColorGenerator([
     Color(0xffe57373),
     Color(0xfff06292),
     Color(0xffba68c8),
@@ -35,17 +35,11 @@ class ColorGenerator {
     Color(0xff90a4ae)
   ]);
 
-  Random _random;
-  List<Color> colorList;
+  final Random _random;
+  final List<Color> colorList;
 
-  static ColorGenerator create(List<Color> colorList) {
-    return new ColorGenerator._internal(colorList);
-  }
-
-  ColorGenerator._internal(List<Color> colorList) {
-    this.colorList = colorList;
-    _random = new Random();
-  }
+  ColorGenerator(this.colorList, { int seed }):
+    _random = Random(seed);
 
   Color getRandomColor() {
     return colorList[_random.nextInt(colorList.length)];

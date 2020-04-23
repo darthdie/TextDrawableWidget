@@ -83,9 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                TextDrawableWidget(data, ColorGenerator.materialColors, (bool selected) {
-                  // on tap callback
-                }, false),
+                TextDrawableWidget(text: data, colorGenerator: ColorGenerator.materialColors),
                 SizedBox(width: 16.0),
                 Expanded(
                   child: Text(data, style: Theme.of(context).textTheme.headline),
@@ -111,10 +109,14 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                TextDrawableWidget(data, ColorGenerator.materialColors, (bool selected) {
-                  // on tap callback
-                  print("on tap callback");
-                }, true, 60.0, 60.0, BoxShape.rectangle),
+                TextDrawableWidget(
+                  text: data,
+                  colorGenerator: ColorGenerator.materialColors,
+                  shape: BoxShape.rectangle,
+                  onTap: (bool selected) {
+                    print("Selected!");
+                  }
+                ),
                 SizedBox(width: 16.0),
                 Expanded(
                   child: Text(data, style: Theme.of(context).textTheme.headline),
